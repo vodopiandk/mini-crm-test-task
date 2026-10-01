@@ -1,11 +1,12 @@
 const express = require('express');
 const db = require('../db');
+const leadsRepo = require('../leadsRepo');
 
 const router = express.Router();
 
 const SOURCES = ['bot', 'manual', 'telegram'];
 const STATUSES = ['new', 'in_progress', 'done'];
-const MAX_FIELD_LENGTH = 500;
+const MAX_FIELD_LENGTH = leadsRepo.MAX_FIELD_LENGTH;
 
 function getTagsForLead(leadId) {
   return db
@@ -92,14 +93,12 @@ router.post('/', (req, res) => {
   const errors = validateManualLead(body);
   if (errors.length) return res.status(400).json({ error: errors.join('; ') });
 
-  const info = db
-    .prepare(
-      `INSERT INTO leads (name, contact, request, source, status)
-       VALUES (?, ?, ?, 'manual', 'new')`
-    )
-    .run(body.name.trim(), body.contact.trim(), body.request.trim());
-
-  const row = db.prepare('SELECT * FROM leads WHERE id = ?').get(info.lastInsertRowid);
+  const row = leadsRepo.createLead({
+    name: body.name.trim(),
+    contact: body.contact.trim(),
+    request: body.request.trim(),
+    source: 'manual',
+  });
   res.status(201).json({ lead: serializeLead(row, []) });
 });
 

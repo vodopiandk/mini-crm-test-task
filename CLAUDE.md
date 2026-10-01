@@ -31,17 +31,19 @@ npm run dev              # то же самое с --watch
 
 ```
 src/
-  index.js        # entrypoint: Express + (с шага 3) бот
+  index.js        # entrypoint: Express + бот вместе, один процесс
   db.js            # better-sqlite3 коннект, прогоняет migrate.sql при старте
   migrate.sql       # схема: leads, tags, lead_tags, messages, bot_sessions
   auth.js            # проверка пароля, requireAuth middleware
+  leadsRepo.js        # создание лида — общее для API и бота
   routes/
-    leads.js          # REST: список/создание лидов, статус, теги лида
-    tags.js             # REST: список/создание тегов
+    leads.js            # REST: список/создание лидов, статус, теги лида
+    tags.js               # REST: список/создание тегов
   bot/
-    bot.js               # сценарий сбора заявки (шаг 3)
-    session.js            # bot_sessions — диалог переживает рестарт (шаг 3)
-    business.js             # Telegram Business, этап 2 (шаг 6)
+    bot.js                 # сценарий сбора заявки: /start → имя → контакт →
+                            # запрос → подтверждение; long polling (grammY)
+    session.js               # bot_sessions — диалог переживает рестарт
+    business.js                 # Telegram Business, этап 2 (шаг 6)
 public/
   login.html        # страница входа
   index.html          # список лидов, фильтры, карточка лида, форма добавления
@@ -56,8 +58,9 @@ SQLite-файл в `data/db.sqlite` (не в репозитории). Схема
 
 ## Статус
 
-Готово: БД + REST API (лиды, теги, auth), веб-интерфейс (логин, список с
-фильтрами и автообновлением, карточка лида со статусом/тегами/историей
-сообщений, форма добавления). Дальше — Telegram-бот (шаг 3).
+Готово: БД + REST API, веб-интерфейс, Telegram-бот (сбор заявки,
+создаёт лида с `source=bot`, диалог переживает рестарт). Дальше — теги и
+фильтры доведены (уже готовы с шага 1-2) → деплой (шаг 5) → Telegram
+Business (шаг 6, этап 2 по ТЗ).
 Подробности развилок — `DECISIONS.md`. Финальное описание — `README.md`
 (пишется в конце).

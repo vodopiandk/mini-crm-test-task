@@ -9,6 +9,7 @@ require('./db'); // открывает БД и прогоняет migrate.sql п
 const { checkPassword, requireAuth } = require('./auth');
 const leadsRouter = require('./routes/leads');
 const tagsRouter = require('./routes/tags');
+const { createBot } = require('./bot/bot');
 
 const app = express();
 
@@ -43,11 +44,19 @@ app.get('/api/session', (req, res) => {
 app.use('/api/leads', requireAuth, leadsRouter);
 app.use('/api/tags', requireAuth, tagsRouter);
 
-// TODO (шаг 3): здесь же стартует бот (bot/bot.js) — один процесс на всё.
-
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+if (process.env.BOT_TOKEN) {
+  const bot = createBot(process.env.BOT_TOKEN);
+  bot.start().catch((err) => {
+    console.error('Bot failed to start:', err);
+  });
+  console.log('Telegram bot started (long polling)');
+} else {
+  console.warn('BOT_TOKEN not set in .env — Telegram bot not started, web CRM still works');
+}
