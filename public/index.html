@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мини-CRM — заявки</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Заявки</h1>
+    <button id="logoutBtn" class="btn btn-ghost">Выйти</button>
+  </header>
+
+  <main class="container">
+    <div class="toolbar">
+      <div class="filters">
+        <label>
+          Источник
+          <select id="filterSource">
+            <option value="">Все</option>
+            <option value="bot">Бот</option>
+            <option value="manual">Вручную</option>
+            <option value="telegram">Telegram</option>
+          </select>
+        </label>
+        <label>
+          Тег
+          <select id="filterTag">
+            <option value="">Все</option>
+          </select>
+        </label>
+      </div>
+      <button id="addLeadBtn" class="btn btn-primary">+ Добавить лида</button>
+    </div>
+
+    <table class="leads-table">
+      <thead>
+        <tr>
+          <th>Имя</th>
+          <th>Контакт</th>
+          <th>Запрос</th>
+          <th>Источник</th>
+          <th>Теги</th>
+          <th>Статус</th>
+          <th>Дата</th>
+        </tr>
+      </thead>
+      <tbody id="leadsBody">
+        <tr><td colspan="7" class="empty">Загрузка…</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <dialog id="leadDialog" class="lead-dialog">
+    <form method="dialog">
+      <div class="dialog-header">
+        <h2 id="ldName"></h2>
+        <button type="submit" class="btn-close" aria-label="Закрыть">×</button>
+      </div>
+
+      <div class="field-row"><span class="field-label">Контакт</span><span id="ldContact"></span></div>
+      <div class="field-row"><span class="field-label">Запрос</span><span id="ldRequest"></span></div>
+      <div class="field-row"><span class="field-label">Источник</span><span id="ldSource"></span></div>
+      <div class="field-row"><span class="field-label">Создан</span><span id="ldCreatedAt"></span></div>
+
+      <div class="field-row">
+        <span class="field-label">Статус</span>
+        <select id="ldStatus">
+          <option value="new">Новый</option>
+          <option value="in_progress">В работе</option>
+          <option value="done">Готово</option>
+        </select>
+      </div>
+
+      <div class="field-block">
+        <span class="field-label">Теги</span>
+        <div id="ldTags" class="tag-list"></div>
+        <div class="tag-add-row">
+          <select id="ldExistingTagSelect"><option value="">— выбрать тег —</option></select>
+          <button type="button" id="ldAssignExistingTagBtn" class="btn btn-small">Добавить</button>
+        </div>
+        <div class="tag-add-row">
+          <input type="text" id="ldNewTagInput" placeholder="Новый тег" maxlength="50">
+          <button type="button" id="ldCreateTagBtn" class="btn btn-small">Создать и добавить</button>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <span class="field-label">История сообщений</span>
+        <ul id="ldMessages" class="message-list"></ul>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="addLeadDialog" class="lead-dialog">
+    <form id="addLeadForm">
+      <div class="dialog-header">
+        <h2>Добавить лида</h2>
+        <button type="button" class="btn-close" id="addLeadCloseBtn" aria-label="Закрыть">×</button>
+      </div>
+      <label class="form-field">Имя <input type="text" id="alName" required maxlength="500"></label>
+      <label class="form-field">Контакт <input type="text" id="alContact" required maxlength="500"></label>
+      <label class="form-field">Запрос <textarea id="alRequest" required maxlength="500"></textarea></label>
+      <p id="alError" class="error-text"></p>
+      <div class="dialog-actions">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
