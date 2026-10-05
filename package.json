@@ -4,6 +4,9 @@
   "private": true,
   "description": "Мини-CRM для заявок агентства (тестовое задание)",
   "main": "src/index.js",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js"
